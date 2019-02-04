@@ -32,7 +32,17 @@
                             <outlet property="delegate" destination="Efe-Hd-oCJ" id="bJG-zj-iOa"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Todoey" id="VOx-Cp-6n1"/>
+                    <toolbarItems>
+                        <barButtonItem title="Item" id="rXg-2n-Eny"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Todoey" id="VOx-Cp-6n1">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="VIR-0V-fW5">
+                            <connections>
+                                <action selector="addNewItems:" destination="Efe-Hd-oCJ" id="W18-70-O24"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D1y-Rv-ILU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
