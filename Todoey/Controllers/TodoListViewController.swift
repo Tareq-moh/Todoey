@@ -183,7 +183,7 @@ extension TodoListViewController : UISearchBarDelegate {
         
         print(request)
         do {
-            
+            //
             itemsArray =  try context.fetch(request)
             
         }
