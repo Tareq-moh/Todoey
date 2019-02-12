@@ -173,13 +173,9 @@ extension TodoListViewController : UISearchBarDelegate {
         print("///////////////")
 
         
-        let predicate = NSPredicate(format: "title CONTAINS %@", searchBar.text!)
+        request.predicate = NSPredicate(format: "title CONTAINS %@", searchBar.text!)
         
-        request.predicate = predicate
         
-        let sortDiscreptor = NSSortDescriptor(key: "title ", ascending: true)
-        
-        request.sortDescriptors = [sortDiscreptor]
         
         print(request)
         do {
@@ -193,6 +189,16 @@ extension TodoListViewController : UISearchBarDelegate {
         } 
         
 tableView.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
     }
     
 }
