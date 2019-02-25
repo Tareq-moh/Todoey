@@ -9,48 +9,44 @@
 import UIKit
 import CoreData
 import RealmSwift
-class CategoryTableViewController: UITableViewController {
+
+class CategoryTableViewController: SwipeTableTableViewController {
 
     let realm = try! Realm()
     
+    let newItem = Category()
+    
+    
+
+    
     var categories : Results<Category>?
     
-   // let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
 
-       // print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        
+       print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
        loadCategories()
    
     }
     
-    func loadCategories () {
-        
-         categories = realm.objects(Category.self)
-        
-        tableView.reloadData()
-        
-    }
-    
+
     //Mark : Tableview DataSource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        
-        
+
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Added yet"
         
        
-        
+
         return cell
         
-        
-    }
+
+   }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -81,24 +77,46 @@ class CategoryTableViewController: UITableViewController {
     func Save(category : Category) {
         
         do {
-            
             try realm.write {
-                realm.add(category)
+                 realm.add(category)
+                
+                
             }
-            
         }
         catch {
             
             print("error with saving data \(error)")
-            
-            
         }
-        self.tableView.reloadData()
-        
+                self.tableView.reloadData()
+    }
+    
+    func loadCategories () {
+        categories = realm.objects(Category.self).sorted(byKeyPath: "name")
+        tableView.reloadData()
         
     }
     
-   
+    override func updateModel(at indexPath: IndexPath) {
+       
+     
+        super.updateModel(at: indexPath)
+
+        if let categoryForDeletion = self.categories?[indexPath.row]
+        
+        {
+            do {
+                
+               try self.realm.write {
+             self.realm.delete(categoryForDeletion)
+
+               super.deleteAllItems(at: indexPath)
+                } }
+
+            catch {
+                print("error with deleting category \(error)")
+            }
+        }
+    }
    
 
   
@@ -111,15 +129,14 @@ class CategoryTableViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
             
-            let newItem = Category()
             
             if textField.text?.count != 0 {
             
-            newItem.name = textField.text!
+                self.newItem.name = textField.text!
             
             
-            
-            self.Save(category: newItem)
+                self.Save(category: self.newItem)
+                
             }
             else {
                 print("error with saving an empty srting ")
@@ -145,6 +162,4 @@ class CategoryTableViewController: UITableViewController {
  
 }
   
-
-
 

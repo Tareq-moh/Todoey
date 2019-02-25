@@ -8,8 +8,8 @@
 
 import UIKit
 import RealmSwift
-
-class TodoListViewController: UITableViewController {
+import SwipeCellKit
+class TodoListViewController: SwipeTableTableViewController {
 
     
     var todoItems : Results<Item>?
@@ -17,6 +17,7 @@ class TodoListViewController: UITableViewController {
     var selecetedCategory : Category? {
         didSet{
            loadItems()
+         
         }
     }
 
@@ -28,7 +29,7 @@ class TodoListViewController: UITableViewController {
         
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
                 
-        
+
        // if let items = defaults.array(forKey: "ToDoListArray") as? [Items] {
        //   itemsArray = items
        // }
@@ -36,7 +37,7 @@ class TodoListViewController: UITableViewController {
         
         }
 
-
+    
    
 
     //MARK - TableView datasource methods
@@ -49,17 +50,15 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+
+        cell.textLabel?.text = todoItems?[indexPath.row].title ?? "no titles yet"
         
-        if let item = todoItems?[indexPath.row] {
-        
-        cell.textLabel?.text = item.title
-        
-      // Ternary operator
-        
-        cell.accessoryType = item.done ? .checkmark : .none
-        } else {
-            cell.textLabel?.text = "No items Added"
+        if  todoItems?[indexPath.row].done == true {
+            cell.accessoryType = .checkmark
+        }
+        else {
+            cell.accessoryType = .none
         }
    
         return cell
@@ -68,29 +67,7 @@ class TodoListViewController: UITableViewController {
     
     //MARK : TavleView Delegate methods
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        if let item = todoItems?[indexPath.row] {
-            do {
-                try realm.write {
-           item.done = !item.done
-                   //print(item.date)
-                }}
-            catch {
-                print("error with checking the items \(error)")
-            }
-        }
-        
-        tableView.reloadData()
-        
-      
-      
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        
-        
-       
-    }
+ 
 
     //MARK : Add new items
     
@@ -115,6 +92,8 @@ class TodoListViewController: UITableViewController {
                        
                         
                     currentCtegory.items.append(NewItem)
+                        
+                        //self.realm.add(NewItem)
                     }}
                     catch {
                     print("error with saving data \(error)")
@@ -143,14 +122,84 @@ class TodoListViewController: UITableViewController {
    
     func loadItems () {
 
-        todoItems = selecetedCategory?.items.sorted(byKeyPath: "date", ascending: true)
+        todoItems = selecetedCategory?.items.sorted(byKeyPath: "title")
         
+        if todoItems == nil {
+        }
 
         tableView.reloadData()
     }
    
+   override func updateCheckingCell(at indexPath : IndexPath) {
+        
+   // super.updateCheckingCell(at: indexPath)
+    
+    if let item = todoItems?[indexPath.row] {
+        do {
+            try realm.write {
+                item.done = !item.done
+                
+
+                
+                //print(item.date)
+            }}
+        catch {
+            print("error with checking the items \(error)")
+        }
+    }
+    
+    tableView.reloadData()
+    
+    
+    
+    tableView.deselectRow(at: indexPath, animated: true)
     
     }
+    
+ 
+    override func updateModel(at indexPath: IndexPath)  {
+
+            
+        
+        //print("\(itemsFor)")
+        if let itemsFor = todoItems?[indexPath.row]
+
+        {
+            do {
+                print("\(itemsFor)")
+                
+                try self.realm.write {
+                    self.realm.delete(itemsFor)
+                  
+                } }
+                
+            catch {
+                print("error with deleting category \(error)")
+            }
+        }
+    }
+    
+    override func deleteAllItems(at indexpath : IndexPath){
+        //updateModel(at: indexpath)
+        
+        let items = selecetedCategory!.items
+        
+        do {
+            print("\(items)")
+            
+            try self.realm.write {
+                self.realm.delete(items)
+                
+            } }
+            
+        catch {
+            print("error with deleting category \(error)")
+        }
+    }
+        
+    }
+
+    
 
 //MARK: Search-Bar Methods
 
