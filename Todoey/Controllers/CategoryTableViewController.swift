@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 import RealmSwift
-
+import ChameleonFramework
 class CategoryTableViewController: SwipeTableTableViewController {
 
     let realm = try! Realm()
@@ -29,6 +29,9 @@ class CategoryTableViewController: SwipeTableTableViewController {
 
        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
        loadCategories()
+        
+        tableView.separatorStyle = .none
+        
    
     }
     
@@ -41,7 +44,7 @@ class CategoryTableViewController: SwipeTableTableViewController {
 
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Added yet"
         
-       
+      // cell.backgroundColor = UIColor.randomFlat
 
         return cell
         
@@ -108,8 +111,9 @@ class CategoryTableViewController: SwipeTableTableViewController {
                 
                try self.realm.write {
              self.realm.delete(categoryForDeletion)
+                
 
-               super.deleteAllItems(at: indexPath)
+//               super.deleteAllItems(at: indexPath)
                 } }
 
             catch {

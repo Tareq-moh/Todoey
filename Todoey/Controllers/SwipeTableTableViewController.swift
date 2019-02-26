@@ -39,7 +39,7 @@ class SwipeTableTableViewController: UITableViewController, SwipeTableViewCellDe
             // handle action by updating model with deletion
 
             self.updateModel(at: indexPath)
-            self.deleteAllItems(at: indexPath)
+            //self.deleteAllItems(at: indexPath)
             //self.updateCheckingCell(at: indexPath)
             
         }
@@ -68,11 +68,11 @@ class SwipeTableTableViewController: UITableViewController, SwipeTableViewCellDe
     
     //MARK : THE SELECTING ITEMS FROM TODO LIST -----------------------------------------------------
     
-    func deleteAllItems(at indexPath : IndexPath) {
-        
-        print("items has been deleted from delete all items method")
-        
-    }
+//    func deleteAllItems(at indexPath : IndexPath) {
+//
+//        print("items has been deleted from delete all items method")
+//
+//    }
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

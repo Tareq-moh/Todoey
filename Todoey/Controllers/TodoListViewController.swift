@@ -9,6 +9,7 @@
 import UIKit
 import RealmSwift
 import SwipeCellKit
+import ChameleonFramework
 class TodoListViewController: SwipeTableTableViewController {
 
     
@@ -54,6 +55,13 @@ class TodoListViewController: SwipeTableTableViewController {
 
         cell.textLabel?.text = todoItems?[indexPath.row].title ?? "no titles yet"
         
+//        
+//        let colors:[UIColor] = [
+//            UIColor.flatWhite,
+//            UIColor.flatRed
+//        ]
+//        cell.backgroundColor = GradientColor(.diagonal, frame: view.frame, colors: colors)
+//        
         if  todoItems?[indexPath.row].done == true {
             cell.accessoryType = .checkmark
         }
@@ -159,17 +167,22 @@ class TodoListViewController: SwipeTableTableViewController {
  
     override func updateModel(at indexPath: IndexPath)  {
 
-            
-        
+       // let
+
+       //
         //print("\(itemsFor)")
-        if let itemsFor = todoItems?[indexPath.row]
+        if let itemsForDeletion = todoItems?[indexPath.row]
 
         {
             do {
-                print("\(itemsFor)")
+                print("\(itemsForDeletion)")
                 
                 try self.realm.write {
-                    self.realm.delete(itemsFor)
+                    self.realm.delete(itemsForDeletion)
+                    //self.realm.delete(itemsFor)
+                    
+
+                    
                   
                 } }
                 
@@ -179,24 +192,24 @@ class TodoListViewController: SwipeTableTableViewController {
         }
     }
     
-    override func deleteAllItems(at indexpath : IndexPath){
-        //updateModel(at: indexpath)
-        
-        let items = selecetedCategory!.items
-        
-        do {
-            print("\(items)")
-            
-            try self.realm.write {
-                self.realm.delete(items)
-                
-            } }
-            
-        catch {
-            print("error with deleting category \(error)")
-        }
-    }
-        
+//    override func deleteAllItems(at indexpath : IndexPath){
+//        //updateModel(at: indexpath)
+//        
+//        let items = selecetedCategory!.items
+//        
+//        do {
+//            print("\(items)")
+//            
+//            try self.realm.write {
+//                self.realm.delete(items)
+//                
+//            } }
+//            
+//        catch {
+//            print("error with deleting category \(error)")
+//        }
+//    }
+    
     }
 
     
