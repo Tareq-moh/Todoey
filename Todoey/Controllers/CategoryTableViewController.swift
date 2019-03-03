@@ -12,9 +12,15 @@ import RealmSwift
 import ChameleonFramework
 class CategoryTableViewController: SwipeTableTableViewController {
 
-    let realm = try! Realm()
+   // var nn : TodoListViewController = TodoListViewController()
     
     let newItem = Category()
+
+    
+    
+    let realm = try! Realm()
+    
+    //let newItem = Category()
     
     
 
@@ -32,7 +38,13 @@ class CategoryTableViewController: SwipeTableTableViewController {
         
         tableView.separatorStyle = .none
         
+        
    
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        
+        navigationController?.navigationBar.barTintColor = UIColor(hexString: "2DC8EE")
+
     }
     
 
@@ -42,9 +54,14 @@ class CategoryTableViewController: SwipeTableTableViewController {
 
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
 
-        cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories Added yet"
+        if let category = categories?[indexPath.row] {
+            
+            cell.textLabel?.text = category.name ?? "No Categories Added yet"
+            
+            cell.backgroundColor = UIColor(hexString: category.color ?? "2DC8EE")
+        }
         
-      // cell.backgroundColor = UIColor.randomFlat
+     
 
         return cell
         
@@ -100,7 +117,7 @@ class CategoryTableViewController: SwipeTableTableViewController {
     }
     
     override func updateModel(at indexPath: IndexPath) {
-       
+      //  let mm = nn.selecetedCategory?.items
      
         super.updateModel(at: indexPath)
 
@@ -111,8 +128,9 @@ class CategoryTableViewController: SwipeTableTableViewController {
                 
                try self.realm.write {
              self.realm.delete(categoryForDeletion)
-                
-
+              // print("items = \(mm)")
+               // self.realm.delete(((nn.todoItems)!))
+                //self.realm.delete(myCustomViewController.todoItems!)
 //               super.deleteAllItems(at: indexPath)
                 } }
 
@@ -133,18 +151,16 @@ class CategoryTableViewController: SwipeTableTableViewController {
         
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
             
+            let newItem = Category()
+
+                newItem.name = textField.text!
+           newItem.color = UIColor.randomFlat.hexValue()
+            self.Save(category: newItem)
             
-            if textField.text?.count != 0 {
+           // self.categories?.realm?.add(self.newItem)
             
-                self.newItem.name = textField.text!
-            
-            
-                self.Save(category: self.newItem)
-                
-            }
-            else {
-                print("error with saving an empty srting ")
-            }
+           
+           
         }
         
         alert.addTextField { (alertTextField) in

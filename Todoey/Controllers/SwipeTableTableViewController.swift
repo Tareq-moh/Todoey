@@ -11,6 +11,7 @@ import SwipeCellKit
 
 class SwipeTableTableViewController: UITableViewController, SwipeTableViewCellDelegate{
     
+
    
 
     override func viewDidLoad() {
@@ -60,6 +61,7 @@ class SwipeTableTableViewController: UITableViewController, SwipeTableViewCellDe
     func updateModel(at indexPath : IndexPath) {
         
         print("item deleted from category list")
+         
     }
     
  

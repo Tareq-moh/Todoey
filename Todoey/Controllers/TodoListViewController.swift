@@ -10,10 +10,14 @@ import UIKit
 import RealmSwift
 import SwipeCellKit
 import ChameleonFramework
-class TodoListViewController: SwipeTableTableViewController {
 
+class TodoListViewController: SwipeTableTableViewController {
     
+    @IBOutlet weak var SearchBar: UISearchBar!
     var todoItems : Results<Item>?
+  
+   
+
     let realm = try! Realm()
     var selecetedCategory : Category? {
         didSet{
@@ -29,15 +33,34 @@ class TodoListViewController: SwipeTableTableViewController {
         
         
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-                
+                tableView.separatorStyle = .none
 
        // if let items = defaults.array(forKey: "ToDoListArray") as? [Items] {
        //   itemsArray = items
        // }
-
         
+      
+
         }
 
+    override func viewWillAppear(_ animated: Bool) {
+        guard let navBar = navigationController?.navigationBar else {fatalError("error with navigation bar")}
+        
+        if let colorHex = selecetedCategory?.color {
+            title = selecetedCategory!.name
+            
+            if let navBarColor = UIColor(hexString: colorHex) {
+                
+                navBar.barTintColor = navBarColor
+                
+                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+                
+                SearchBar.barTintColor = navBarColor
+            }
+            
+       
+        }
+    }
     
    
 
@@ -51,23 +74,33 @@ class TodoListViewController: SwipeTableTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
-
-        cell.textLabel?.text = todoItems?[indexPath.row].title ?? "no titles yet"
+       
         
-//        
-//        let colors:[UIColor] = [
-//            UIColor.flatWhite,
-//            UIColor.flatRed
-//        ]
-//        cell.backgroundColor = GradientColor(.diagonal, frame: view.frame, colors: colors)
-//        
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
+        if let item = todoItems?[indexPath.row] {
+            
+            cell.textLabel?.text = item.title ?? "no titles yet"
+            
+            if let colorr = UIColor(hexString: selecetedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                cell.backgroundColor = colorr
+                cell.textLabel?.textColor = ContrastColorOf(colorr, returnFlat: true)
+
+            }
+                
+          
+           
+
+       
+
+        
+//   ***************************** Check Mark *********************************
         if  todoItems?[indexPath.row].done == true {
             cell.accessoryType = .checkmark
         }
         else {
             cell.accessoryType = .none
-        }
+            }}
    
         return cell
         
@@ -166,9 +199,10 @@ class TodoListViewController: SwipeTableTableViewController {
     
  
     override func updateModel(at indexPath: IndexPath)  {
+       
+       
 
-       // let
-
+       // if let
        //
         //print("\(itemsFor)")
         if let itemsForDeletion = todoItems?[indexPath.row]
@@ -180,16 +214,18 @@ class TodoListViewController: SwipeTableTableViewController {
                 try self.realm.write {
                     self.realm.delete(itemsForDeletion)
                     //self.realm.delete(itemsFor)
-                    
 
-                    
-                  
-                } }
+
+                }
+
+            }
                 
             catch {
                 print("error with deleting category \(error)")
             }
         }
+
+        
     }
     
 //    override func deleteAllItems(at indexpath : IndexPath){
